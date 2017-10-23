@@ -1,0 +1,30 @@
+
+[alias]
+	ci = commit
+	co = checkout
+	br = branch
+	df = diff --no-prefix
+	dc = diff --cached
+	ds = diff --stat
+	st = status
+
+	# typical shortcuts for cherry-pick/rebase workflow
+	cp  = cherry-pick
+	cpc = cherry-pick --continue
+	cpa = cherry-pick --abort
+	rb  = rebase
+	rbi = rebase --interactive --autosquash
+	rba = rebase --abort
+	rbc = rebase --continue
+
+	# cleanup folder
+	cl = clean -idx
+
+	# Nicer looking log views:
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+	# no color for file export / commit messages
+	lgg = log --oneline --abbrev-commit --date=local --pretty=format:'%h %d %s (%cr) <%ai>'
+	# classic one line history ...
+	lgadog = log --all --decorate --oneline --graph
+	# ... without intermediate commits to visualize branch structure
+	lgbr   = log --all --decorate --oneline --graph --simplify-by-decoration
