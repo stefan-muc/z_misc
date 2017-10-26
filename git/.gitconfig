@@ -6,6 +6,7 @@
 	df = diff --no-prefix
 	dc = diff --cached
 	ds = diff --stat
+	dcs = diff --cached --stat
 	st = status
 
 	# typical shortcuts for cherry-pick/rebase workflow
