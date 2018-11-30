@@ -1,5 +1,6 @@
 
 [alias]
+	# general abbreviations of common commands
 	ci = commit
 	co = checkout
 	br = branch
@@ -29,3 +30,6 @@
 	lgadog = log --all --decorate --oneline --graph
 	# ... without intermediate commits to visualize branch structure
 	lgbr   = log --all --decorate --oneline --graph --simplify-by-decoration
+
+	# Various
+	changedfiles = diff --name-status
