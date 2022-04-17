@@ -1,6 +1,5 @@
 {
-    "telemetry.enableTelemetry": false,
-    "telemetry.enableCrashReporter": false,
+    "telemetry.telemetryLevel": "off",
     "files.autoSave": "onFocusChange",
     "editor.renderWhitespace": "boundary",
     "files.insertFinalNewline": true,
