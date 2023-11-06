@@ -1,7 +1,7 @@
 ## Usage
-  * Take content of »ShareX-backup« and put it into a *.zip file.
+  * Take content of ï¿½ShareX-backupï¿½ and put it into a *.zip file.
   * Rename this file to *.sxb
-  * Import file using ShareX -> Application Settings -> Export / Import -> [Import settings...]
+  * Import file using ShareX -> Application Settings -> Settings -> [Import...]
 
 ## Content
 Settings for:
