@@ -17,7 +17,7 @@ Sometimes you want to host a private or semi-public project, but don't want to g
 ### prepare local project and clone into a bare project
 
 * ``cd`` into a temp folder: ``cd /tmp/my-workfolder``
-* clone your project: ``git clone --bare /opt/git/my-git-project my-git-project.git`` 
+* clone your project: ``git clone --bare /opt/git/my-git-project my-git-project.git``
 * ``cd`` into your bare project: ``cd /tmp/my-workfolder/my-git-project.git/``
 * allow read access to repository over HTTP(S) by enabling the hook that writes ``info/refs`` file that's necessary for *Dumb HTTP* access to a project: ``mv hooks/post-update.sample hooks/post-update``
 
@@ -52,7 +52,7 @@ This clone of git project only has read access to this project.
 
 ## Troubleshooting
 
-If *git* responds with *``fatal: repository 'https://example.net/my-git-project.git' not found``*, most probably the ``post-update`` hook didn't get executed during push of our change. Symptoms: file ``info/refs`` doesn't exist
+If *git* responds with *``fatal: repository 'https://example.net/my-git-project.git' not found``*, most probably the ``post-update`` hook didn't get executed during push of our change. Symptoms: file ``info/refs`` (as file) doesn't exist
 
 Use a webbrowser to fix path problems, you can point your browser to ``https://example.net/my-git-project.git/description`` to see if file access works out properly
 
@@ -65,4 +65,3 @@ SSH access should be secured by Public Key Authentication if your webhoster supp
 ## Further reading
 
 * Pro Git: [4.1 Git on the Server - Dumb HTTP](https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols#_dumb_http)
-
