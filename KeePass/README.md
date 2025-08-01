@@ -9,8 +9,11 @@ It can be found at <https://keepass.info/> and also on Chocolatey <https://commu
 Adjust this settings in *Options* dialogue:
 
 * Security
+    * [x] Lock workspace after global user inactivity (seconds): Insert reasonable time
     * General -> [x] Lock workspace when the computer is about to be suspended
     * General -> [x] Lock workspace when the remote control mode changes
+* Interface
+    * Entry List -> [x] Automatically resize entry list columns when resizing the main window
 * Integration
     * [x] Run KeePass at Windows startup (current user)
 * Advanced
