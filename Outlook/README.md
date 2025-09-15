@@ -152,6 +152,65 @@ End Sub
 
 ### Upload script
 
-```bat
-@echo off
+Save as `upload.sh` and execute every minute
+
+```bash
+#! /bin/env bash
+FILE=calendar.ics
+VARFILE=upload.vars.sh
+
+MIN=10
+
+USER=username
+PASSWORD=password
+WEBDAV=https://nextcloud.example.net/remote.php/dav/files/$USER/
+
+UPLOAD=false
+
+if [[ -f "$VARFILE" ]]; then
+    source ./$VARFILE
+    rm ./$VARFILE
+    echo Doing retry $TRIES
+else
+    TRIES=0
+fi
+
+if [[ ! -f "$FILE" ]]; then
+    echo "No calendar file existing, nothing to do..."
+    if [[ "$TRIES" -eq "$MIN" ]]; then
+        mshta "javascript:alert('Couldn\'t find $FILE after $MIN minutes.');close()" &
+    fi
+    TRIES=$(( $TRIES + 1 ))
+    echo "TRIES=$TRIES" > $VARFILE
+    exit 1
+else
+    if [[ "$TRIES" -gt "$MIN" ]]; then
+        mshta "javascript:alert('Finally found $FILE after $TRIES minutes.');close()" &
+    fi
+fi
+
+if [[ ! -f "$FILE.uploaded" ]]; then
+    UPLOAD=true
+    echo Didn\'t find an uploaded file, so scheduling upload.
+else
+    OLD=$(sed "/UID.*/d" ./$FILE.uploaded | sha256sum | cut -d' ' -f1)
+    NEW=$(sed "/UID.*/d" ./$FILE | sha256sum | cut -d' ' -f1)
+    if [[ "$OLD" = "$NEW" ]]; then
+        echo Calendar file not changed, nothing to do.
+        rm ./$FILE
+        exit 0
+    else
+        UPLOAD=true
+    fi
+fi
+
+if [[ "$UPLOAD" -eq "true" ]]; then
+    echo Uploading calendar file
+    curl --fail-with-body -T ./$FILE -u "$USER:$PASSWORD" $WEBDAV
+    if [[ "$?" != "0" ]]; then
+        exit 2
+    else
+        mv ./$FILE ./$FILE.uploaded
+    fi
+fi
 ```
