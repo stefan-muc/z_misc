@@ -168,7 +168,7 @@ Save as `upload.sh` and adjust to your WebDAV URL and insert credentials.
 FILE=calendar.ics
 VARFILE=upload.vars.sh
 
-MIN=10
+MIN=5
 
 USER=username
 PASSWORD=password
@@ -179,55 +179,70 @@ UPLOAD=false
 if [[ -f "$VARFILE" ]]; then
     source ./$VARFILE
     rm ./$VARFILE
-    echo Doing retry $TRIES
+    RESULT="Doing retry $TRIES"
+    echo $RESULT
 else
     TRIES=0
 fi
 
+DATE=$(date)
+RET=-1
+
 if [[ ! -f "$FILE" ]]; then
-    echo "No calendar file existing, nothing to do..."
+    RESULT="No calendar file existing, nothing to do..."
+    echo $RESULT
     if [[ "$TRIES" -eq "$MIN" ]]; then
-        mshta "javascript:alert('Couldn\'t find $FILE after $MIN minutes.');close()" &
+        msg $(whoami) "Couldn\'t find $FILE after $TRIES tries." &
     fi
     TRIES=$(( $TRIES + 1 ))
-    echo "TRIES=$TRIES" > $VARFILE
-    exit 1
+    RET=1
 else
     if [[ "$TRIES" -gt "$MIN" ]]; then
-        mshta "javascript:alert('Finally found $FILE after $TRIES minutes.');close()" &
+        msg $(whoami) "Finally found $FILE after $TRIES tries." &
     fi
 fi
 
 if [[ ! -f "$FILE.uploaded" ]]; then
     UPLOAD=true
-    echo Didn\'t find an uploaded file, so scheduling upload.
+    RESULT="Didn\'t find an uploaded file, so scheduling upload."
+    echo $RESULT
 else
-    OLD=$(sed "/UID.*/d" ./$FILE.uploaded | sha256sum | cut -d' ' -f1)
-    NEW=$(sed "/UID.*/d" ./$FILE | sha256sum | cut -d' ' -f1)
+    OLD=$(sed "/UID.*/d" ./$FILE.uploaded | sed "/DTSTAMP.*/d" | sha256sum | cut -d' ' -f1)
+    NEW=$(sed "/UID.*/d" ./$FILE          | sed "/DTSTAMP.*/d" | sha256sum | cut -d' ' -f1)
     if [[ "$OLD" = "$NEW" ]]; then
-        echo Calendar file not changed, nothing to do.
+        RESULT="Calendar file not changed, nothing to do."
+        echo $RESULT
         rm ./$FILE
-        exit 0
+        RET=0
     else
         UPLOAD=true
     fi
 fi
 
-if [[ "$UPLOAD" -eq "true" ]]; then
-    echo Uploading calendar file
+if [[ "$UPLOAD" == "true" ]]; then
+    RESULT="Uploading calendar file"
+    echo $RESULT
     curl --fail-with-body -T ./$FILE -u "$USER:$PASSWORD" $WEBDAV
     if [[ "$?" != "0" ]]; then
-        exit 2
+        RET=2
     else
         mv ./$FILE ./$FILE.uploaded
     fi
 fi
+
+echo "TRIES=$TRIES" > $VARFILE
+echo "DATE=\"$DATE\"" >> $VARFILE
+echo "RESULT=\"$RESULT\"" >> $VARFILE
+
+exit $RET
 ```
 
 Now execute manually (in git bash) and see if upload works properly.
 
 Set up a Windows Scheduled Task with this properties:
 
-Triggers: At log on, delay for 5 minutes, repeat every 1 minute (indefinately), enabled
+Triggers: At log on, delay for 5 minutes, repeat every 5 minutes (indefinately), enabled
 
-Action: Start a program `"C:\Program Files\Git\git-bash.exe"`, arguments `-c "/c/path/to/upload.sh"`, start in `c:\path\to`
+Action: Start a program `"C:\Program Files\Git\usr\bin\mintty.exe"`, arguments `-w hide "/bin/bash" -l -e "/c/path/to/upload.sh"`, start in `c:\path\to`
+
+You can always see last status in file `upload.vars.sh` for diagnostics.
