@@ -24,8 +24,8 @@ Declare PtrSafe Function KillTimer Lib "user32" (ByVal hwnd As LongLong, ByVal n
 Public TimerID As LongLong 'Need a timer ID to eventually turn off the timer. If the timer ID <> 0 then the timer is running
 
 Public Sub ActivateTimer(ByVal nMinutes As LongLong)
-  nMinutes = nMinutes * 1000 * 60 'The SetTimer call accepts milliseconds, so convert to minutes
-  If TimerID <> 0 Then Call DeactivateTimer 'Check to see if timer is running before call to SetTimer
+  nMinutes = nMinutes * 1000 * 60 ' The SetTimer call accepts milliseconds, so convert to minutes
+  If TimerID <> 0 Then Call DeactivateTimer ' Check to see if timer is running before call to SetTimer
   TimerID = SetTimer(0, 0, nMinutes, AddressOf TriggerTimer)
   If TimerID = 0 Then
     MsgBox "The timer failed to activate."
@@ -50,11 +50,12 @@ Public Sub TriggerTimer(ByVal hwnd As Long, ByVal uMsg As Long, ByVal idevent As
 End Sub
 ```
 
-### This Outlook Session
+### ThisOutlookSession
+
+Open `ThisOutlookSession`, paste code below and insert your own path at `TODO` line.
 
 ```VBA
 Option Explicit
-Private m_dtNextTime As Date
 
 ' based on https://docs.microsoft.com/en-us/office/vba/api/Outlook.CalendarSharing
 Public Sub ExportCalendar()
@@ -85,10 +86,10 @@ Public Sub ExportCalendar()
  End With
 
  ' Export calendar to an iCalendar calendar (.ics) file.
- oCalendarSharing.SaveAsICal "D:\your\path\calendar.ics" ' TODO
+ oCalendarSharing.SaveAsICal "C:\path\to\calendar.ics" ' TODO
 
  ' Might yield "invalid procedure call or argument", try if it will work - otherwise call script manually
- 'Shell "D:\your\path\upload.bat", vbHide
+ 'Shell "C:\path\to\upload.bat", vbHide
 
 EndRoutine:
  On Error GoTo 0
@@ -137,12 +138,10 @@ End Sub
 ' based on https://stackoverflow.com/a/211779
 Private Sub StartCalendarTimer()
     SetTimer 0, 1, 0, AddressOf ExportCalendar
-    'm_dtNextTime = DateAdd("h", 1, Now)
-    'Application.OnTime m_dtNextTime, "ExportCalendar"
 End Sub
 
 Private Sub Application_Startup()
-    Call ActivateTimer(15) ' for first calendar export
+    Call ActivateTimer(5) ' set timer interval in minutes
 End Sub
 
 Private Sub Application_Quit()
