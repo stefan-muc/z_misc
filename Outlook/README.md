@@ -12,9 +12,13 @@ This was a feature of Outlook classic that got removed. There's (currently) no w
 
 ## Export and upload calendar
 
-To export the calendar (anonymized - only availability information) use this Visual Basic for Applications scripts:
+To export the calendar (anonymized - only availability information) use this Visual Basic for Applications scripts.
 
-### General Script
+Open VBA by pressing [Alt]-[F11]
+
+### VBA Module
+
+Right click Project and select *Insert -> Module*. Paste code from below
 
 ```VBA
 ' https://stackoverflow.com/questions/12257985/outlook-vba-run-a-code-every-half-an-hour
@@ -149,9 +153,15 @@ Private Sub Application_Quit()
 End Sub
 ```
 
+### First test
+
+Restart Outlook and allow VBA script to be run at startup.
+
+After the timer intervall your *.ics file gets exported at the location you specified above.
+
 ### Upload script
 
-Save as `upload.sh` and execute every minute
+Save as `upload.sh` and adjust to your WebDAV URL and insert credentials.
 
 ```bash
 #! /bin/env bash
@@ -213,3 +223,11 @@ if [[ "$UPLOAD" -eq "true" ]]; then
     fi
 fi
 ```
+
+Now execute manually (in git bash) and see if upload works properly.
+
+Set up a Windows Scheduled Task with this properties:
+
+Triggers: At log on, delay for 5 minutes, repeat every 1 minute (indefinately), enabled
+
+Action: Start a program `"C:\Program Files\Git\git-bash.exe"`, arguments `-c "/c/path/to/upload.sh"`, start in `c:\path\to`
